@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Item = require("./item");
 const User = require("./user");
 const bcrypt = require("bcrypt");
+var cors = require("cors");
 const app = express();
 require("dotenv").config();
 
@@ -13,10 +14,13 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.static("public"));
+app.use(cors());
 
 // middleware for checking JWT
 function checkJwt(req, res, next) {
-  const token = req.header("Authorization");
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
   if (!token) return res.status(401).send("Access denied. No token provided.");
 
   try {
@@ -60,7 +64,8 @@ app.post("/login", async (req, res) => {
   // 3. Create and assign a token
   const token = jwt.sign(
     { _id: user._id, isAdmin: user.isAdmin },
-    "your_jwt_secret"
+    "your_jwt_secret",
+    { expiresIn: "1h" }
   );
   res.header("auth-token", token).send(token);
 });
@@ -77,6 +82,7 @@ app.get("/items/:id", async (req, res) => {
 });
 
 app.post("/items", checkJwt, checkAdmin, async (req, res) => {
+  console.log("req.body :>> ", req.body);
   const item = new Item({
     name: req.body.name,
     price: req.body.price,
