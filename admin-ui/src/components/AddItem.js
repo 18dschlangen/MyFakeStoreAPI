@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function AddItem() {
+function AddItem({ isLoggedIn }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -9,6 +9,13 @@ function AddItem() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Only allow a logged in user to add items
+    if (!isLoggedIn) {
+      setError("You must be logged in to add items.");
+      return;
+    }
+
     const response = await fetch("http://localhost:3000/items", {
       method: "POST",
       headers: {

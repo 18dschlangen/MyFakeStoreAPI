@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Login() {
+function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -25,6 +25,7 @@ function Login() {
 
       localStorage.setItem("token", token);
       setLoggedIn(true);
+      props.onLogin();
     } else {
       // If there was an error, get the error message as text and set it as the error
       const errorMsg = await response.text();
