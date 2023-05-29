@@ -82,11 +82,12 @@ app.get("/items/:id", async (req, res) => {
 });
 
 app.post("/items", checkJwt, checkAdmin, async (req, res) => {
-  console.log("req.body :>> ", req.body);
   const item = new Item({
     name: req.body.name,
     price: req.body.price,
-    quantity: req.body.quantity,
+    category: req.body.category,
+    description: req.body.description,
+    picture: req.body.picture,
   });
   await item.save();
   res.send(item);

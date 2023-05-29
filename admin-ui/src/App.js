@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { useState } from "react";
 import Login from "./components/Login";
 import AddItem from "./components/AddItem";
 import DeleteItem from "./components/DeleteItem";
@@ -15,16 +15,7 @@ function App() {
       <div>
         <nav>
           <ul>
-            {!isLoggedIn ? (
-              <>
-                <li>
-                  <Link to="/login">Admin Login</Link>
-                </li>
-                <li>
-                  <Link to="/view-items">View Items</Link>
-                </li>
-              </>
-            ) : (
+            {isLoggedIn ? (
               <>
                 <li>
                   <Link to="/add-item">Add Item</Link>
@@ -36,29 +27,44 @@ function App() {
                   <Link to="/edit-item">Edit Item</Link>
                 </li>
                 <li>
-                  <Logout onLogout={() => setIsLoggedIn(false)} />
+                  <Link to="/logout">Logout</Link>
                 </li>
               </>
+            ) : (
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
             )}
+            <li>
+              <Link to="/view-items">View Items</Link>
+            </li>
           </ul>
         </nav>
-
-        <div>{isLoggedIn ? "Logged In" : "Not Logged In"}</div>
-
         <Routes>
           <Route
             path="/login"
             element={<Login onLogin={() => setIsLoggedIn(true)} />}
           />
-          <Route
-            path="/add-item"
-            element={<AddItem isLoggedIn={isLoggedIn} />}
-          />
-          <Route path="/delete-item" element={<DeleteItem />} />
-          <Route
-            path="/edit-item"
-            element={<EditItem isLoggedIn={isLoggedIn} />}
-          />
+          {isLoggedIn && (
+            <>
+              <Route
+                path="/add-item"
+                element={<AddItem isLoggedIn={isLoggedIn} />}
+              />
+              <Route
+                path="/delete-item"
+                element={<DeleteItem isLoggedIn={isLoggedIn} />}
+              />
+              <Route
+                path="/edit-item"
+                element={<EditItem isLoggedIn={isLoggedIn} />}
+              />
+              <Route
+                path="/logout"
+                element={<Logout onLogout={() => setIsLoggedIn(false)} />}
+              />
+            </>
+          )}
           <Route path="/view-items" element={<ViewItems />} />
         </Routes>
       </div>
